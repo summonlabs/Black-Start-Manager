@@ -202,7 +202,8 @@ operating system, filesystem, processes, or the installed package path. **SYNTHE
 a modelled facility, owner, or evidence source.
 
 - Unit, integration, and end-to-end lifecycle tests: **REAL** code paths, **SYNTHETIC**
-  facility and owner. Twelve test executables, 90 tests.
+  facility and owner. Ten CTest executables, 84 tests, all passing in Release and in Debug
+  with zero first-party warnings (`/W4 /WX /permissive-`).
 - Randomized state machines with printed seeds and an independently written model of the
   documented eligibility rules: 24 seeded mutations per run plus a randomized plan-document
   stream, with invariants checked after every mutation: **REAL**, SYNTHETIC facility.
@@ -222,6 +223,15 @@ a modelled facility, owner, or evidence source.
   SYNTHETIC plant.
 - Package validation: install into a clean prefix, then configure, build, and run an
   independent out-of-tree consumer with `find_package`: **REAL**.
+- Runtime checking: the whole suite also passes under MSVC AddressSanitizer
+  (`-DBLACK_START_MANAGER_ENABLE_ASAN=ON`, Debug): 10 of 10 suites, no report.
+- Static analysis: MSVC `/analyze` over the library reported one first-party warning
+  (C28020 on the bounds of a fixed 256-entry lookup table, where the loop condition is
+  itself the proof of the bound) and one finding inside the Windows SDK's `ws2tcpip.h`.
+  Both are recorded rather than suppressed; no meaningful first-party finding remains.
+- Fresh-clone closure: cloned from the configured remote at the release commit, configured,
+  built, and tested in Release and Debug, installed, and consumed out of tree by the
+  downstream consumer.
 
 ### Not validated
 

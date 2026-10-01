@@ -262,15 +262,12 @@ struct Measurement {
   }
   const auto finish = std::chrono::steady_clock::now();
   measurement.seconds = std::chrono::duration<double>(finish - start).count();
-  const Result<JsonValue> status = manager.value().status();
-  if (status.ok()) {
-    const JsonValue* recovery = status.value().find("recovery");
-    if (recovery != nullptr) {
-      const JsonValue* bytes = recovery->find("journal_bytes");
-      if (bytes != nullptr && bytes->is_integer() && measurement.operations > 0) {
-        measurement.bytes_per_operation =
-            static_cast<std::uint64_t>(bytes->as_integer()) / measurement.operations;
-      }
+  const Result<JsonValue> verification = manager.value().verify_store();
+  if (verification.ok() && measurement.operations > 0) {
+    const JsonValue* bytes = verification.value().find("journal_bytes");
+    if (bytes != nullptr && bytes->is_integer()) {
+      measurement.bytes_per_operation =
+          static_cast<std::uint64_t>(bytes->as_integer()) / measurement.operations;
     }
   }
   const Result<Unit> closed = manager.value().close();
