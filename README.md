@@ -1,6 +1,6 @@
 # Black Start Manager
 
-Black Start Manager is the DCCP boundary 56 runtime for governing the restart of facility
+Black Start Manager is the runtime for governing the restart of facility
 infrastructure from a fully or materially de-energized state. It owns the restoration
 session, the dependency graph over restoration obligations, readiness gates, the evidence
 that gates accept, bounded requests to adjacent owners, durable attempt identity, authority
